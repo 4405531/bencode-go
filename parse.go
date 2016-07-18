@@ -89,12 +89,16 @@ func decodeString(r *bufio.Reader) (data string, err error) {
 		err = errors.New("Bad string length")
 		return
 	}
-	var buf = make([]byte, length)
-	_, err = io.ReadFull(r, buf)
-	if err != nil {
-		return
+	if length <= 512 {
+		var buf = make([]byte, length)
+		_, err = io.ReadFull(r, buf)
+		if err != nil {
+			return
+		}
+		data = string(buf)
+	} else {
+		err = errors.New("ignore piece")
 	}
-	data = string(buf)
 	return
 }
 
